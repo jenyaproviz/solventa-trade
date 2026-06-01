@@ -93,3 +93,33 @@ npm run preview
 - There is currently no public sign-up flow.
 - Authentication is admin login based on backend environment variables.
 - If you change `ADMIN_EMAIL` or `ADMIN_PASSWORD`, restart the backend server.
+
+## Deploy Frontend for Free (Cheapest Option)
+
+If you only need to show the website publicly, deploy the `frontend` app on a free static host.
+
+### Recommended: Cloudflare Pages (Free)
+
+1. Push this repository to GitHub.
+2. Go to Cloudflare Pages → **Create project** → **Connect to Git**.
+3. Select this repository and configure:
+   - **Framework preset:** `Vite`
+   - **Root directory:** `frontend`
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+4. Add environment variable (optional, if backend is deployed):
+   - `VITE_API_URL=https://your-backend-url`
+5. Deploy. You will get a free subdomain like:
+   - `your-project.pages.dev`
+6. Enable automatic deploys on every push (enabled by default when connected to Git).
+
+### Other Free Hosts
+
+- **Netlify:** `your-project.netlify.app`
+- **Vercel:** `your-project.vercel.app`
+- **GitHub Pages:** `username.github.io`
+
+### Custom Domain (Optional)
+
+- You can attach a custom domain such as `solventa.com` later.
+- Hosting can stay free; only the domain registration is usually paid yearly.
