@@ -16,8 +16,10 @@ import Quarry from "./pages/Quarry"
 import Lime from "./pages/Lime"
 
 function App() {
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, "") || "/"
+
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basePath}>
       <MainLayout>
         <Routes>
           <Route path="/" element={<Home />} />

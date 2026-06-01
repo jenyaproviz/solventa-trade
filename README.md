@@ -119,6 +119,25 @@ If you only need to show the website publicly, deploy the `frontend` app on a fr
 - **Vercel:** `your-project.vercel.app`
 - **GitHub Pages:** `username.github.io`
 
+### GitHub Pages Auto-Deploy (Included)
+
+This repository now includes:
+
+- Workflow: `.github/workflows/deploy-frontend-gh-pages.yml`
+- Automatic deploy from `main` when frontend files change
+- SPA route fallback (`404.html`) so client-side routes still work after refresh
+
+To use it:
+
+1. In GitHub, open **Settings → Pages**.
+2. Set **Source** to **GitHub Actions**.
+3. Push changes to `main` (or run the workflow manually from the Actions tab).
+4. Open the published URL shown by the workflow (usually `https://<username>.github.io/<repo>/`).
+
+Notes:
+- The Vite base path is set automatically for repository pages during CI via `VITE_BASE_PATH`.
+- `BrowserRouter` uses Vite's base URL so routes work under `/<repo>/`.
+
 ### Custom Domain (Optional)
 
 - You can attach a custom domain such as `solventa.com` later.
