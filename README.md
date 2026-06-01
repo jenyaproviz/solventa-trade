@@ -138,7 +138,19 @@ Notes:
 - The Vite base path is set automatically for repository pages during CI via `VITE_BASE_PATH`.
 - `BrowserRouter` uses Vite's base URL so routes work under `/<repo>/`.
 
-### Custom Domain (Optional)
+### Custom Domain
 
-- You can attach a custom domain such as `solventa.com` later.
-- Hosting can stay free; only the domain registration is usually paid yearly.
+The site is configured for **`solventa-consulting.com`** via `frontend/public/CNAME`.
+
+To activate it:
+
+1. At your DNS provider, add these records for `solventa-consulting.com`:
+   - `A @ 185.199.108.153`
+   - `A @ 185.199.109.153`
+   - `A @ 185.199.110.153`
+   - `A @ 185.199.111.153`
+   - `CNAME www jenyaproviz.github.io`
+   > If using Cloudflare, set records to **DNS only** (gray cloud), not proxied.
+2. In GitHub, go to **Settings → Pages**.
+3. Under **Custom domain**, enter `solventa-consulting.com` and click **Save**.
+4. Wait for DNS propagation (up to 24 hours), then enable **Enforce HTTPS**.
