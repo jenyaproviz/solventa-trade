@@ -96,7 +96,7 @@ export default function Footer() {
                 />
               </a>
             </div>
-            <p className="text-xs text-slate-600">&copy; {new Date().getFullYear()} SolventaEOOD. All rights reserved.</p>
+            <p className="text-xs text-slate-600">&copy; {new Date().getFullYear()} Solventa EOOD. All rights reserved.</p>
           </div>
         </div>
       </div>

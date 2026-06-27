@@ -9,6 +9,7 @@ frontend/dist-ssr/
 # Environment files
 backend/.env
 frontend/.env
+atlas-credentials.env
 
 # Logs
 *.log
