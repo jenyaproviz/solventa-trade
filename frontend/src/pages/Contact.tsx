@@ -20,19 +20,16 @@ export default function Contact() {
   const [submitResult, setSubmitResult] = useState<ContactMessageResponse | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState("")
-  const [remainingSeconds, setRemainingSeconds] = useState(0)
-
-  useEffect(() => {
+  const [remainingSeconds, setRemainingSeconds] = useState(() => {
     const rawLastSent = localStorage.getItem(CONTACT_LAST_SENT_KEY)
-    if (!rawLastSent) return
+    if (!rawLastSent) return 0
 
     const lastSentMs = Number(rawLastSent)
-    if (!Number.isFinite(lastSentMs)) return
+    if (!Number.isFinite(lastSentMs)) return 0
 
     const elapsedSeconds = Math.floor((Date.now() - lastSentMs) / 1000)
-    const remaining = Math.max(0, COOLDOWN_SECONDS - elapsedSeconds)
-    setRemainingSeconds(remaining)
-  }, [])
+    return Math.max(0, COOLDOWN_SECONDS - elapsedSeconds)
+  })
 
   useEffect(() => {
     if (remainingSeconds <= 0) return

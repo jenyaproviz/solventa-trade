@@ -14,7 +14,7 @@ export default function Home() {
 						Smart Trade. Trusted Consulting.
 					</h1>
 					<p className="text-lg leading-relaxed text-slate-800 md:text-xl">
-						Welcome to Solventa Trade & Consulting. We support international trade,
+						Welcome to Solventa. We support international trade,
 						sourcing, and practical business growth between Europe, the Middle East,
 						and Asia.
 					</p>

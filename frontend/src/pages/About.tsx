@@ -17,7 +17,7 @@ export default function About() {
           <div className="mt-10 grid gap-10 md:mt-14 md:grid-cols-[1.05fr_1fr] md:gap-12">
             <TextCard className="h-full">
               <p className="text-base leading-relaxed text-slate-800 md:text-lg">
-                <span className="font-bold">SOLVENTA Trade & Consulting</span> is a premier
+                <span className="font-bold">SOLVENTA</span> is a premier
                 international consulting and trade partner dedicated to fostering seamless
                 commercial operations between Europe, the Middle East, and the Far East. We
                 specialize in providing strategic business development, comprehensive sourcing
@@ -59,7 +59,7 @@ export default function About() {
                 <br />
                 Integrity: A commitment to ethical trade practices and transparent communication.
                 <br />
-                SOLVENTA Trade & Consulting: Your strategic partner for the next generation of global commerce.
+                SOLVENTA: Your strategic partner for the next generation of global commerce.
               </p>
             </TextCard>
 

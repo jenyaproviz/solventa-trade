@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { LogIn } from "lucide-react"
 import PageSectionLayout from "../components/layout/PageSectionLayout"
 import Button from "../components/ui/Button"
-import { loginAdmin, getStoredAdminToken, getStoredAdminUser, signUpUser } from "../services/authService"
+import { fetchAuthenticatedAdmin, loginAdmin, signUpUser } from "../services/authService"
 
 const unifiedCardClassName =
 	"rounded-2xl border border-[#d0deed] bg-gradient-to-br from-white to-[#eef5ff] shadow-[0_4px_16px_rgba(12,59,103,0.08)]"
@@ -20,9 +20,22 @@ export default function AdminLogin() {
 	const [loggedIn, setLoggedIn] = useState(false)
 
 	useEffect(() => {
-		if (getStoredAdminToken()) {
-			const storedUser = getStoredAdminUser()
-			navigate(storedUser?.role === "admin" ? "/admin/dashboard" : "/", { replace: true })
+		let isMounted = true
+
+		async function restoreSession() {
+			try {
+				const user = await fetchAuthenticatedAdmin()
+				if (!isMounted) return
+				navigate(user.role === "admin" ? "/admin/dashboard" : "/", { replace: true })
+			} catch {
+				// No existing session cookie.
+			}
+		}
+
+		void restoreSession()
+
+		return () => {
+			isMounted = false
 		}
 	}, [navigate])
 

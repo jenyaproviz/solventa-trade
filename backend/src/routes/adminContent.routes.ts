@@ -7,6 +7,7 @@ import {
   updateAdminContentItemByKey,
 } from '../data/contentStore.js';
 import { requireAdmin } from '../middleware/requireAuth.js';
+import { requireCsrf } from '../middleware/requireCsrf.js';
 
 export const adminContentRouter = Router();
 
@@ -30,7 +31,7 @@ adminContentRouter.get('/:key', requireAdmin, async (req, res) => {
   return res.json({ item });
 });
 
-adminContentRouter.post('/', requireAdmin, async (req, res) => {
+adminContentRouter.post('/', requireAdmin, requireCsrf, async (req, res) => {
   const { key, title, body } = req.body as {
     key?: unknown;
     title?: unknown;
@@ -59,7 +60,7 @@ adminContentRouter.post('/', requireAdmin, async (req, res) => {
   return res.status(201).json({ item });
 });
 
-adminContentRouter.put('/:key', requireAdmin, async (req, res) => {
+adminContentRouter.put('/:key', requireAdmin, requireCsrf, async (req, res) => {
   const contentKey = getRouteParam(req.params.key);
   const item = await getAdminContentItemByKey(contentKey);
 
@@ -88,7 +89,7 @@ adminContentRouter.put('/:key', requireAdmin, async (req, res) => {
   return res.json({ item: updated });
 });
 
-adminContentRouter.delete('/:key', requireAdmin, async (req, res) => {
+adminContentRouter.delete('/:key', requireAdmin, requireCsrf, async (req, res) => {
   const removed = await deleteAdminContentItemByKey(getRouteParam(req.params.key));
 
   if (!removed) {

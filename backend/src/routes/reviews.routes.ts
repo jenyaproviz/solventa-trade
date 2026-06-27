@@ -7,6 +7,7 @@ import {
   updateReviewById,
 } from '../data/contentStore.js';
 import { requireAdmin } from '../middleware/requireAuth.js';
+import { requireCsrf } from '../middleware/requireCsrf.js';
 
 export const reviewsRouter = Router();
 
@@ -26,11 +27,10 @@ reviewsRouter.get('/admin/all', requireAdmin, async (_req, res) => {
 });
 
 reviewsRouter.post('/', async (req, res) => {
-  const { authorName, rating, message, approved } = req.body as {
+  const { authorName, rating, message } = req.body as {
     authorName?: unknown;
     rating?: unknown;
     message?: unknown;
-    approved?: unknown;
   };
 
   const parsedRating = typeof rating === 'number' ? rating : Number(rating);
@@ -51,13 +51,13 @@ reviewsRouter.post('/', async (req, res) => {
     authorName: authorName.trim(),
     rating: Math.round(parsedRating),
     message: message.trim(),
-    approved: typeof approved === 'boolean' ? approved : true
+    approved: false
   });
 
   return res.status(201).json({ item });
 });
 
-reviewsRouter.put('/:id', requireAdmin, async (req, res) => {
+reviewsRouter.put('/:id', requireAdmin, requireCsrf, async (req, res) => {
   const reviewId = getRouteParam(req.params.id);
   const review = await getReviewById(reviewId);
 
@@ -101,7 +101,7 @@ reviewsRouter.put('/:id', requireAdmin, async (req, res) => {
   return res.json({ item });
 });
 
-reviewsRouter.delete('/:id', requireAdmin, async (req, res) => {
+reviewsRouter.delete('/:id', requireAdmin, requireCsrf, async (req, res) => {
   const removed = await deleteReviewById(getRouteParam(req.params.id));
 
   if (!removed) {

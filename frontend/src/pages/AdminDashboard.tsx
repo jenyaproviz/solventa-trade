@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react"
 import { useNavigate } from "react-router-dom"
 import PageSectionLayout from "../components/layout/PageSectionLayout"
+import SectionShell from "../components/layout/SectionShell"
 import TextCard from "../components/ui/TextCard"
+import InfoCard from "../components/ui/InfoCard"
+import SectionHeader from "../components/ui/SectionHeader"
 import {
   Clock3,
   FileText,
@@ -17,6 +20,7 @@ import {
 	clearAdminSession,
 	fetchAuthenticatedAdmin,
 	getStoredAdminUser,
+	logoutAdmin,
 	type AdminUser,
 } from "../services/authService"
 import Button from "../components/ui/Button"
@@ -164,11 +168,12 @@ export default function AdminDashboard() {
 				setContentStatus((prev) => ({ ...prev, error: message }))
 				setContactStatus((prev) => ({ ...prev, error: message }))
 			} finally {
-				if (!isMounted) return
-				setBlogStatus((prev) => ({ ...prev, loading: false }))
-				setReviewStatus((prev) => ({ ...prev, loading: false }))
-				setContentStatus((prev) => ({ ...prev, loading: false }))
-				setContactStatus((prev) => ({ ...prev, loading: false }))
+				if (isMounted) {
+					setBlogStatus((prev) => ({ ...prev, loading: false }))
+					setReviewStatus((prev) => ({ ...prev, loading: false }))
+					setContentStatus((prev) => ({ ...prev, loading: false }))
+					setContactStatus((prev) => ({ ...prev, loading: false }))
+				}
 			}
 		}
 
@@ -194,8 +199,8 @@ export default function AdminDashboard() {
 		})
 	}, [contactMessages])
 
-	function handleLogout() {
-		clearAdminSession()
+	async function handleLogout() {
+		await logoutAdmin()
 		navigate("/admin/login", { replace: true })
 	}
 
@@ -361,7 +366,7 @@ export default function AdminDashboard() {
 	return (
 		<PageSectionLayout title="Admin Dashboard" theme="slate">
 			<div className="space-y-8">
-				<div className="rounded-2xl border border-[#c9dcf1] bg-gradient-to-r from-[#edf5ff] via-white to-[#fff4e8] p-6 shadow-[0_8px_24px_rgba(12,59,103,0.08)]">
+				<SectionShell className="border-[#c9dcf1] bg-gradient-to-r from-[#edf5ff] via-white to-[#fff4e8] !py-6 shadow-[0_8px_24px_rgba(12,59,103,0.08)]">
 					<div className="flex flex-wrap items-center justify-between gap-4">
 						<div>
 							<p className="text-sm font-semibold uppercase tracking-wide text-[#1f5c92]">
@@ -387,54 +392,42 @@ export default function AdminDashboard() {
 							</Button>
 						</div>
 					</div>
-				</div>
+				</SectionShell>
 
 				<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-					<div className="rounded-2xl border border-slate-200 bg-white/85 p-5 shadow-[0_6px_20px_rgba(12,59,103,0.08)]">
-						<div className="flex items-center justify-between">
-							<p className="text-sm font-semibold text-slate-600">Blog Posts</p>
-							<div className="rounded-lg border border-[#c9d5e3] bg-[#eaf0f7] p-2 text-[#163a5b]">
-								<FileText className="h-4 w-4" />
-							</div>
-						</div>
-						<p className="mt-4 text-sm text-slate-600">{blogPosts.length} posts loaded</p>
-					</div>
-
-					<div className="rounded-2xl border border-slate-200 bg-white/85 p-5 shadow-[0_6px_20px_rgba(12,59,103,0.08)]">
-						<div className="flex items-center justify-between">
-							<p className="text-sm font-semibold text-slate-600">Reviews Queue</p>
-							<div className="rounded-lg border border-[#f2d3ba] bg-[#fff1e6] p-2 text-[#ea6a1a]">
-								<Star className="h-4 w-4" />
-							</div>
-						</div>
-						<p className="mt-4 text-sm text-slate-600">{reviews.length} reviews loaded</p>
-					</div>
-
-					<div className="rounded-2xl border border-slate-200 bg-white/85 p-5 shadow-[0_6px_20px_rgba(12,59,103,0.08)]">
-						<div className="flex items-center justify-between">
-							<p className="text-sm font-semibold text-slate-600">Contact Messages</p>
-							<div className="rounded-lg border border-[#c9d5e3] bg-[#eef3f8] p-2 text-[#2a4f70]">
-								<MessageSquare className="h-4 w-4" />
-							</div>
-						</div>
-							<p className="mt-4 text-sm text-slate-600">{contactMessages.length} messages saved</p>
-					</div>
-
-					<div className="rounded-2xl border border-slate-200 bg-white/85 p-5 shadow-[0_6px_20px_rgba(12,59,103,0.08)]">
-						<div className="flex items-center justify-between">
-							<p className="text-sm font-semibold text-slate-600">System Status</p>
-							<div className="rounded-lg border border-[#c9d5e3] bg-[#eaf0f7] p-2 text-[#163a5b]">
-								<RefreshCw className="h-4 w-4" />
-							</div>
-						</div>
-						<p className="mt-4 text-sm text-slate-600">Connected to authenticated backend</p>
-					</div>
+					<InfoCard
+						icon={FileText}
+						title="Blog Posts"
+						description={blogStatus.loading ? "Loading…" : `${blogPosts.length} posts loaded`}
+						iconClassName="text-[#163a5b]"
+						className="border-slate-200 bg-white/85 shadow-[0_6px_20px_rgba(12,59,103,0.08)]"
+					/>
+					<InfoCard
+						icon={Star}
+						title="Reviews Queue"
+						description={reviewStatus.loading ? "Loading…" : `${reviews.length} reviews loaded`}
+						className="border-slate-200 bg-white/85 shadow-[0_6px_20px_rgba(12,59,103,0.08)]"
+					/>
+					<InfoCard
+						icon={MessageSquare}
+						title="Contact Messages"
+						description={contactStatus.loading ? "Loading…" : `${contactMessages.length} messages saved`}
+						iconClassName="text-[#2a4f70]"
+						className="border-slate-200 bg-white/85 shadow-[0_6px_20px_rgba(12,59,103,0.08)]"
+					/>
+					<InfoCard
+						icon={RefreshCw}
+						title="System Status"
+						description="Connected to authenticated backend"
+						iconClassName="text-[#163a5b]"
+						className="border-slate-200 bg-white/85 shadow-[0_6px_20px_rgba(12,59,103,0.08)]"
+					/>
 				</div>
 
 				<div className="grid gap-6 xl:grid-cols-2">
 					<TextCard className="bg-white/85">
 						<div className="flex items-center justify-between gap-4">
-							<h3 className="text-2xl font-bold text-[#0c3b67]">Blog Management</h3>
+							<SectionHeader title="Blog Management" />
 							<div className="flex items-center gap-2 rounded-lg bg-white/80 px-3 py-1.5 text-xs font-semibold text-[#1f5c92]">
 								<FileText className="h-3.5 w-3.5" />
 								{blogStatus.loading ? "Loading" : `${blogPosts.length} Posts`}
@@ -489,7 +482,7 @@ export default function AdminDashboard() {
 
 					<TextCard className="bg-white/85">
 						<div className="flex items-center justify-between gap-4">
-							<h3 className="text-2xl font-bold text-[#0c3b67]">Reviews Moderation</h3>
+							<SectionHeader title="Reviews Moderation" />
 							<div className="flex items-center gap-2 rounded-lg bg-white/80 px-3 py-1.5 text-xs font-semibold text-[#1f5c92]">
 								<Star className="h-3.5 w-3.5" />
 								{reviewStatus.loading ? "Loading" : `${reviews.length} Reviews`}
@@ -543,10 +536,10 @@ export default function AdminDashboard() {
 
 					<TextCard className="bg-white/85 xl:col-span-2">
 						<div className="flex items-center justify-between gap-4">
-							<h3 className="text-2xl font-bold text-[#0c3b67]">Contact Inbox</h3>
+							<SectionHeader title="Contact Inbox" />
 							<div className="flex items-center gap-2 rounded-lg bg-white/80 px-3 py-1.5 text-xs font-semibold text-[#1f5c92]">
 								<MessageSquare className="h-3.5 w-3.5" />
-								{contactStatus.loading ? "Loading" : `${contactMessages.length} Messages`}
+								{contactStatus.loading ? "Loading" : `${contactMessages.length} ${contactMessages.length === 1 ? "Message" : "Messages"}`}
 							</div>
 						</div>
 						{contactStatus.error ? <p className="mt-6 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{contactStatus.error}</p> : null}
@@ -561,32 +554,32 @@ export default function AdminDashboard() {
 									{contactMessages.map((item) => {
 										const isSelected = item.id === selectedContactId
 										const preview = item.message.length > 110 ? `${item.message.slice(0, 110)}...` : item.message
-											const subjectClassName = isSelected ? "truncate font-semibold text-white" : "truncate font-semibold text-[#0c3b67]"
-											const metaClassName = isSelected ? "mt-1 truncate text-sm text-slate-200" : "mt-1 truncate text-sm text-slate-600"
-											const previewClassName = isSelected ? "mt-2 text-sm leading-6 text-slate-100" : "mt-2 text-sm leading-6 text-slate-600"
-											const stampClassName = isSelected ? "shrink-0 text-right text-xs uppercase tracking-wide text-slate-200" : "shrink-0 text-right text-xs uppercase tracking-wide text-slate-500"
-											const actionClassName = isSelected ? "mt-2 normal-case text-orange-200" : "mt-2 normal-case text-[#1f5c92]"
+										const subjectClassName = isSelected ? "truncate font-semibold text-white" : "truncate font-semibold text-[#0c3b67]"
+										const metaClassName = isSelected ? "mt-1 truncate text-sm text-slate-200" : "mt-1 truncate text-sm text-slate-600"
+										const previewClassName = isSelected ? "mt-2 text-sm leading-6 text-slate-100" : "mt-2 text-sm leading-6 text-slate-600"
+										const stampClassName = isSelected ? "shrink-0 text-right text-xs uppercase tracking-wide text-slate-200" : "shrink-0 text-right text-xs uppercase tracking-wide text-slate-500"
+										const actionClassName = isSelected ? "mt-2 normal-case text-orange-200" : "mt-2 normal-case text-[#1f5c92]"
 
 										return (
 											<button
 												key={item.id}
 												type="button"
 												onClick={() => setSelectedContactId(item.id)}
-													className={`w-full rounded-2xl border p-4 text-left transition ${isSelected ? "border-[#3f6d95] bg-gradient-to-br from-[#15385a] to-[#0c2741] shadow-[0_10px_28px_rgba(12,59,103,0.22)]" : "border-slate-200 bg-white/80 hover:border-[#c9dcf1] hover:bg-[#f8fbff]"}`}
+												className={`w-full rounded-2xl border p-4 text-left transition ${isSelected ? "border-[#3f6d95] bg-gradient-to-br from-[#15385a] to-[#0c2741] shadow-[0_10px_28px_rgba(12,59,103,0.22)]" : "border-slate-200 bg-white/80 hover:border-[#c9dcf1] hover:bg-[#f8fbff]"}`}
 											>
 												<div className="flex items-start justify-between gap-4">
 													<div className="min-w-0 flex-1">
-															<p className={subjectClassName}>{item.subject}</p>
-															<p className={metaClassName}>{item.name} • {item.email}</p>
-															<p className={previewClassName}>{preview}</p>
+														<div className={subjectClassName}>{item.subject}</div>
+														<div className={metaClassName}>{item.name} • {item.email}</div>
+														<div className={previewClassName}>{preview}</div>
 													</div>
-														<div className={stampClassName}>
-														<p>{new Intl.DateTimeFormat("en", {
+													<div className={stampClassName}>
+														<div>{new Intl.DateTimeFormat("en", {
 															month: "short",
 															day: "2-digit",
 															year: "numeric",
-														}).format(new Date(item.createdAt))}</p>
-															<p className={actionClassName}>{isSelected ? "Open" : "Read message"}</p>
+														}).format(new Date(item.createdAt))}</div>
+														<div className={actionClassName}>{isSelected ? "Open" : "Read message"}</div>
 													</div>
 												</div>
 											</button>
@@ -603,13 +596,13 @@ export default function AdminDashboard() {
 											<p className="mt-2 text-sm text-slate-600">From {selectedContactMessage.name} • <a className="font-medium text-[#1f5c92] hover:underline" href={`mailto:${selectedContactMessage.email}`}>{selectedContactMessage.email}</a></p>
 										</div>
 										<div className="text-right text-sm text-slate-500">
-											<p>{new Intl.DateTimeFormat("en", {
+											<div>{new Intl.DateTimeFormat("en", {
 												month: "short",
 												day: "2-digit",
 												year: "numeric",
 												hour: "2-digit",
 												minute: "2-digit",
-											}).format(new Date(selectedContactMessage.createdAt))}</p>
+											}).format(new Date(selectedContactMessage.createdAt))}</div>
 											{selectedContactMessage.attachmentName ? <p className="mt-2">Attachment: {selectedContactMessage.attachmentName}</p> : null}
 										</div>
 									</div>
@@ -640,7 +633,7 @@ export default function AdminDashboard() {
 
 					<TextCard className="bg-white/85 xl:col-span-2">
 						<div className="flex items-center justify-between gap-4">
-							<h3 className="text-2xl font-bold text-[#0c3b67]">Admin Content</h3>
+							<SectionHeader title="Admin Content" />
 							<div className="flex items-center gap-2 rounded-lg bg-white/80 px-3 py-1.5 text-xs font-semibold text-[#1f5c92]">
 								<Settings className="h-3.5 w-3.5" />
 								{contentStatus.loading ? "Loading" : `${contentItems.length} Items`}

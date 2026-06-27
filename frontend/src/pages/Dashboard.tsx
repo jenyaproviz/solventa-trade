@@ -4,7 +4,7 @@ import { BarChart3, FileText, MessageSquare, Settings, Star } from "lucide-react
 import PageSectionLayout from "../components/layout/PageSectionLayout"
 import TextCard from "../components/ui/TextCard"
 import Button from "../components/ui/Button"
-import { clearAdminSession, fetchAuthenticatedAdmin, getStoredAdminUser, type AdminUser } from "../services/authService"
+import { clearAdminSession, fetchAuthenticatedAdmin, getStoredAdminUser, logoutAdmin, type AdminUser } from "../services/authService"
 import { fetchDashboardSummary, type DashboardSummary } from "../services/dashboardService"
 
 export default function Dashboard() {
@@ -47,8 +47,8 @@ export default function Dashboard() {
 	const recentReviews = useMemo(() => summary?.reviews.recent ?? [], [summary])
 	const recentContent = useMemo(() => summary?.content.recent ?? [], [summary])
 
-	function handleLogout() {
-		clearAdminSession()
+	async function handleLogout() {
+		await logoutAdmin()
 		navigate("/admin/login", { replace: true })
 	}
 

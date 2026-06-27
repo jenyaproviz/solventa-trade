@@ -52,15 +52,19 @@ export function createSlug(title: string) {
     .replace(/-+/g, '-');
 }
 
-export async function listBlogPosts() {
+export async function listBlogPosts(options?: { publishedOnly?: boolean }) {
   const posts = await getBlogPostsCollection();
-  const items = await posts.find<BlogPost>({}).sort({ createdAt: -1 }).toArray();
+  const filter = options?.publishedOnly ? { published: true } : {};
+  const items = await posts.find<BlogPost>(filter).sort({ createdAt: -1 }).toArray();
   return items.map(stripMongoMeta);
 }
 
-export async function getBlogPostBySlug(slug: string) {
+export async function getBlogPostBySlug(slug: string, options?: { publishedOnly?: boolean }) {
   const posts = await getBlogPostsCollection();
-  const found = await posts.findOne<BlogPost>({ slug });
+  const filter = options?.publishedOnly
+    ? { slug, published: true }
+    : { slug };
+  const found = await posts.findOne<BlogPost>(filter);
   return found ? stripMongoMeta(found) : null;
 }
 

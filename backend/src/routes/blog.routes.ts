@@ -9,6 +9,7 @@ import {
   updateBlogPostById,
 } from '../data/contentStore.js';
 import { requireAdmin } from '../middleware/requireAuth.js';
+import { requireCsrf } from '../middleware/requireCsrf.js';
 
 export const blogRouter = Router();
 
@@ -18,12 +19,12 @@ function getRouteParam(value: string | string[] | undefined) {
 }
 
 blogRouter.get('/', async (_req, res) => {
-  const items = await listBlogPosts();
+  const items = await listBlogPosts({ publishedOnly: true });
   return res.json({ items });
 });
 
 blogRouter.get('/:slug', async (req, res) => {
-  const post = await getBlogPostBySlug(getRouteParam(req.params.slug));
+  const post = await getBlogPostBySlug(getRouteParam(req.params.slug), { publishedOnly: true });
 
   if (!post) {
     return res.status(404).json({ message: 'Blog post not found.' });
@@ -32,7 +33,7 @@ blogRouter.get('/:slug', async (req, res) => {
   return res.json({ item: post });
 });
 
-blogRouter.post('/', requireAdmin, async (req, res) => {
+blogRouter.post('/', requireAdmin, requireCsrf, async (req, res) => {
   const { title, excerpt, content, coverImageUrl, published } = req.body as {
     title?: unknown;
     excerpt?: unknown;
@@ -45,20 +46,22 @@ blogRouter.post('/', requireAdmin, async (req, res) => {
     return res.status(400).json({ message: 'Title, excerpt, and content are required.' });
   }
 
+  const shouldPublish = published === true;
+
   const item = await createBlogPost({
     slug: createSlug(title),
     title: title.trim(),
     excerpt: excerpt.trim(),
     content: content.trim(),
     coverImageUrl: typeof coverImageUrl === 'string' && coverImageUrl.trim() !== '' ? coverImageUrl.trim() : undefined,
-    published: Boolean(published),
-    publishedAt: Boolean(published) ? new Date().toISOString() : null
+    published: shouldPublish,
+    publishedAt: shouldPublish ? new Date().toISOString() : null
   });
 
   return res.status(201).json({ item });
 });
 
-blogRouter.put('/:id', requireAdmin, async (req, res) => {
+blogRouter.put('/:id', requireAdmin, requireCsrf, async (req, res) => {
   const postId = getRouteParam(req.params.id);
   const post = await getBlogPostById(postId);
 
@@ -109,7 +112,7 @@ blogRouter.put('/:id', requireAdmin, async (req, res) => {
   return res.json({ item });
 });
 
-blogRouter.delete('/:id', requireAdmin, async (req, res) => {
+blogRouter.delete('/:id', requireAdmin, requireCsrf, async (req, res) => {
   const removed = await deleteBlogPostById(getRouteParam(req.params.id));
 
   if (!removed) {

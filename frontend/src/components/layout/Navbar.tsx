@@ -4,8 +4,8 @@ import { NavLink, useNavigate } from "react-router-dom"
 import Button from "../ui/Button"
 import {
   AUTH_CHANGED_EVENT,
-  clearAdminSession,
   getStoredAdminUser,
+  logoutAdmin,
   type AdminUser,
 } from "../../services/authService"
 
@@ -21,21 +21,16 @@ const navItems = [
 ]
 
 export default function Navbar() {
-  const [theme, setTheme] = useState<"light" | "dark">("light")
-  const [admin, setAdmin] = useState<AdminUser | null>(getStoredAdminUser())
-  const navigate = useNavigate()
-
-  useEffect(() => {
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
     const savedTheme = localStorage.getItem(THEME_STORAGE_KEY)
     if (savedTheme === "dark" || savedTheme === "light") {
-      setTheme(savedTheme)
-      return
+      return savedTheme
     }
 
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setTheme("dark")
-    }
-  }, [])
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  })
+  const [admin, setAdmin] = useState<AdminUser | null>(getStoredAdminUser())
+  const navigate = useNavigate()
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme)
@@ -60,9 +55,9 @@ export default function Navbar() {
     setTheme((prev) => (prev === "light" ? "dark" : "light"))
   }
 
-  function handleLogout() {
-	clearAdminSession()
-	navigate("/admin/login", { replace: true })
+  async function handleLogout() {
+  await logoutAdmin()
+  navigate("/admin/login", { replace: true })
   }
 
   return (

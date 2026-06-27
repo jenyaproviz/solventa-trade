@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { authConfig, type AuthRole, type AuthUser } from '../config/auth.js';
+import { AUTH_COOKIE_NAME } from '../config/cookies.js';
 
 type AuthRequest = Request & {
   user?: AuthUser;
@@ -8,12 +9,15 @@ type AuthRequest = Request & {
 
 function authenticateRequest(req: AuthRequest, res: Response, next: NextFunction) {
   const authorization = req.header('authorization');
+  const tokenFromHeader = authorization?.startsWith('Bearer ')
+    ? authorization.slice('Bearer '.length)
+    : null;
+  const tokenFromCookie = req.cookies?.[AUTH_COOKIE_NAME];
+  const token = tokenFromHeader ?? (typeof tokenFromCookie === 'string' ? tokenFromCookie : null);
 
-  if (!authorization?.startsWith('Bearer ')) {
+  if (!token) {
     return res.status(401).json({ message: 'Missing authorization token.' });
   }
-
-  const token = authorization.slice('Bearer '.length);
 
   try {
     const decoded = jwt.verify(token, authConfig.jwtSecret, {

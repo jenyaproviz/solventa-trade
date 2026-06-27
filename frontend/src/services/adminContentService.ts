@@ -1,5 +1,4 @@
 import { apiRequest } from './apiClient'
-import { getStoredAdminToken } from './authService'
 
 export type AdminContentItem = {
 	id: string
@@ -23,36 +22,19 @@ export type AdminContentItemResponse = {
 	item: AdminContentItem
 }
 
-function getAdminHeaders() {
-	const token = getStoredAdminToken()
-
-	if (!token) {
-		throw new Error('Not authenticated')
-	}
-
-	return {
-		Authorization: `Bearer ${token}`,
-	}
-}
-
 export async function listAdminContent(): Promise<AdminContentItem[]> {
-	const response = await apiRequest<AdminContentListResponse>('/api/admin/content', {
-		headers: getAdminHeaders(),
-	})
+	const response = await apiRequest<AdminContentListResponse>('/api/admin/content')
 	return response.items
 }
 
 export async function getAdminContentItem(key: string): Promise<AdminContentItem> {
-	const response = await apiRequest<AdminContentItemResponse>(`/api/admin/content/${key}`, {
-		headers: getAdminHeaders(),
-	})
+	const response = await apiRequest<AdminContentItemResponse>(`/api/admin/content/${key}`)
 	return response.item
 }
 
 export async function createAdminContentItem(payload: AdminContentInput): Promise<AdminContentItem> {
 	const response = await apiRequest<AdminContentItemResponse>('/api/admin/content', {
 		method: 'POST',
-		headers: getAdminHeaders(),
 		json: payload,
 	})
 
@@ -62,7 +44,6 @@ export async function createAdminContentItem(payload: AdminContentInput): Promis
 export async function updateAdminContentItem(key: string, payload: Partial<Omit<AdminContentInput, 'key'>>): Promise<AdminContentItem> {
 	const response = await apiRequest<AdminContentItemResponse>(`/api/admin/content/${key}`, {
 		method: 'PUT',
-		headers: getAdminHeaders(),
 		json: payload,
 	})
 
@@ -72,7 +53,6 @@ export async function updateAdminContentItem(key: string, payload: Partial<Omit<
 export async function deleteAdminContentItem(key: string): Promise<AdminContentItem> {
 	const response = await apiRequest<AdminContentItemResponse>(`/api/admin/content/${key}`, {
 		method: 'DELETE',
-		headers: getAdminHeaders(),
 	})
 
 	return response.item

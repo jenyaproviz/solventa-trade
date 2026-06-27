@@ -1,5 +1,4 @@
 import { apiRequest } from './apiClient'
-import { getStoredAdminToken } from './authService'
 
 export type BlogPost = {
 	id: string
@@ -30,18 +29,6 @@ export type BlogItemResponse = {
 	item: BlogPost
 }
 
-function getAdminHeaders() {
-	const token = getStoredAdminToken()
-
-	if (!token) {
-		throw new Error('Not authenticated')
-	}
-
-	return {
-		Authorization: `Bearer ${token}`,
-	}
-}
-
 export async function listBlogPosts(): Promise<BlogPost[]> {
 	const response = await apiRequest<BlogListResponse>('/api/blog')
 	return response.items
@@ -55,7 +42,6 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost> {
 export async function createBlogPost(payload: BlogPostInput): Promise<BlogPost> {
 	const response = await apiRequest<BlogItemResponse>('/api/blog', {
 		method: 'POST',
-		headers: getAdminHeaders(),
 		json: payload,
 	})
 
@@ -65,7 +51,6 @@ export async function createBlogPost(payload: BlogPostInput): Promise<BlogPost> 
 export async function updateBlogPost(id: string, payload: Partial<BlogPostInput> & { published?: boolean }): Promise<BlogPost> {
 	const response = await apiRequest<BlogItemResponse>(`/api/blog/${id}`, {
 		method: 'PUT',
-		headers: getAdminHeaders(),
 		json: payload,
 	})
 
@@ -75,7 +60,6 @@ export async function updateBlogPost(id: string, payload: Partial<BlogPostInput>
 export async function deleteBlogPost(id: string): Promise<BlogPost> {
 	const response = await apiRequest<BlogItemResponse>(`/api/blog/${id}`, {
 		method: 'DELETE',
-		headers: getAdminHeaders(),
 	})
 
 	return response.item

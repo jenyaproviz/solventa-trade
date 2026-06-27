@@ -18,11 +18,9 @@ export type SignUpPayload = {
 }
 
 export type LoginResponse = {
-	token: string
 	admin: AdminUser
 }
 
-const ADMIN_TOKEN_KEY = 'solventa_admin_token'
 const ADMIN_USER_KEY = 'solventa_admin_user'
 export const AUTH_CHANGED_EVENT = 'solventa-auth-changed'
 
@@ -30,10 +28,6 @@ function notifyAuthChanged() {
 	if (typeof window !== 'undefined') {
 		window.dispatchEvent(new Event(AUTH_CHANGED_EVENT))
 	}
-}
-
-export function getStoredAdminToken() {
-	return localStorage.getItem(ADMIN_TOKEN_KEY)
 }
 
 export function getStoredAdminUser(): AdminUser | null {
@@ -48,15 +42,23 @@ export function getStoredAdminUser(): AdminUser | null {
 }
 
 export function saveAdminSession(response: LoginResponse) {
-	localStorage.setItem(ADMIN_TOKEN_KEY, response.token)
 	localStorage.setItem(ADMIN_USER_KEY, JSON.stringify(response.admin))
 	notifyAuthChanged()
 }
 
 export function clearAdminSession() {
-	localStorage.removeItem(ADMIN_TOKEN_KEY)
 	localStorage.removeItem(ADMIN_USER_KEY)
 	notifyAuthChanged()
+}
+
+export async function logoutAdmin() {
+	try {
+		await apiRequest<{ ok: boolean }>('/api/auth/logout', {
+			method: 'POST',
+		})
+	} finally {
+		clearAdminSession()
+	}
 }
 
 export async function loginAdmin(payload: LoginPayload): Promise<LoginResponse> {
@@ -80,17 +82,8 @@ export async function signUpUser(payload: SignUpPayload): Promise<LoginResponse>
 }
 
 export async function fetchAuthenticatedAdmin(): Promise<AdminUser> {
-	const token = getStoredAdminToken()
-
-	if (!token) {
-		throw new Error('Not authenticated')
-	}
-
 	const response = await apiRequest<{ authenticated: true; admin: AdminUser }>('/api/auth/me', {
 		method: 'GET',
-		headers: {
-			Authorization: `Bearer ${token}`,
-		},
 	})
 
 	if (response.admin) {

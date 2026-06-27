@@ -1,8 +1,12 @@
 import { Router } from 'express';
+import { randomBytes } from 'node:crypto';
 import jwt from 'jsonwebtoken';
+import type { Response } from 'express';
 import { authConfig, buildPublicUserIdentity, getPublicAdminIdentity, type AuthUser } from '../config/auth.js';
-import { createRegisteredUser, findRegisteredUserByEmail } from '../data/authStore.js';
+import { AUTH_COOKIE_NAME, CSRF_COOKIE_NAME, getAuthCookieOptions, getCsrfCookieOptions } from '../config/cookies.js';
+import { createRegisteredUser, verifyRegisteredUserPassword } from '../data/authStore.js';
 import { requireAuth } from '../middleware/requireAuth.js';
+import { requireCsrf } from '../middleware/requireCsrf.js';
 
 export const authRouter = Router();
 
@@ -20,6 +24,27 @@ function issueToken(user: AuthUser) {
       audience: authConfig.audience
     }
   );
+}
+
+function setSessionCookies(res: Response, token: string) {
+  const csrfToken = randomBytes(24).toString('hex');
+  res.cookie(AUTH_COOKIE_NAME, token, getAuthCookieOptions());
+  res.cookie(CSRF_COOKIE_NAME, csrfToken, getCsrfCookieOptions());
+}
+
+function clearSessionCookies(res: Response) {
+  res.clearCookie(AUTH_COOKIE_NAME, {
+    httpOnly: true,
+    secure: getAuthCookieOptions().secure,
+    sameSite: getAuthCookieOptions().sameSite,
+    path: '/',
+  });
+  res.clearCookie(CSRF_COOKIE_NAME, {
+    httpOnly: false,
+    secure: getCsrfCookieOptions().secure,
+    sameSite: getCsrfCookieOptions().sameSite,
+    path: '/',
+  });
 }
 
 function normalizeDisplayName(email: string, displayName?: string) {
@@ -71,9 +96,9 @@ authRouter.post('/signup', async (req, res) => {
     });
 
     const token = issueToken(user);
+    setSessionCookies(res, token);
 
     return res.status(201).json({
-      token,
       admin: user,
     });
   } catch (error) {
@@ -98,16 +123,16 @@ authRouter.post('/login', async (req, res) => {
   ) {
     const admin = getPublicAdminIdentity();
     const token = issueToken(admin);
+    setSessionCookies(res, token);
 
     return res.json({
-      token,
       admin
     });
   }
 
-  const account = await findRegisteredUserByEmail(normalizedEmail);
+  const account = await verifyRegisteredUserPassword(normalizedEmail, normalizedPassword);
 
-  if (!account || account.password !== normalizedPassword) {
+  if (!account) {
     return res.status(401).json({ message: 'Invalid credentials.' });
   }
 
@@ -116,9 +141,9 @@ authRouter.post('/login', async (req, res) => {
     displayName: account.displayName,
   });
   const token = issueToken(user);
+  setSessionCookies(res, token);
 
   return res.json({
-    token,
     admin: user
   });
 });
@@ -128,4 +153,9 @@ authRouter.get('/me', requireAuth, (req, res) => {
     authenticated: true,
     admin: req.user
   });
+});
+
+authRouter.post('/logout', requireAuth, requireCsrf, (_req, res) => {
+  clearSessionCookies(res);
+  return res.json({ ok: true });
 });

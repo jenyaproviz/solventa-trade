@@ -28,11 +28,12 @@ npm install
 Create `backend/.env` (or copy from `backend/.env.example`):
 
 ```env
+NODE_ENV=development
 PORT=4000
 CLIENT_URL=http://localhost:5173
-JWT_SECRET=replace-with-a-long-random-secret
-ADMIN_EMAIL=solventatrade@gmail.com
-ADMIN_PASSWORD=Solventa2026
+JWT_SECRET=replace-with-a-long-random-secret-at-least-32-chars
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=replace-with-a-strong-admin-password
 ```
 
 ### Frontend
@@ -88,8 +89,17 @@ npm run build
 npm run preview
 ```
 
+## 6) Domain Deployment Notes
+
+- Set `NODE_ENV=production` in backend so auth cookies are `Secure`.
+- Set `CLIENT_URL` to your frontend domain. For multiple origins, use a comma-separated list.
+Example: `CLIENT_URL=https://solventa.com,https://www.solventa.com`
+- Set `VITE_API_URL` in frontend to your deployed backend URL.
+- Frontend includes SPA rewrites for route refreshes:
+Files: `frontend/vercel.json` and `frontend/public/_redirects`
+
 ## Notes
 
-- There is currently no public sign-up flow.
-- Authentication is admin login based on backend environment variables.
+- There is a public sign-up flow for non-admin users.
+- Authentication uses an HTTP-only session cookie and CSRF protection for mutating authenticated routes.
 - If you change `ADMIN_EMAIL` or `ADMIN_PASSWORD`, restart the backend server.

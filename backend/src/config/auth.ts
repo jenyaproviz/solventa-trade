@@ -1,5 +1,3 @@
-import { env } from './env.js';
-
 export type AuthRole = 'admin' | 'user';
 
 export type AuthUser = {
@@ -8,10 +6,20 @@ export type AuthUser = {
   role: AuthRole;
 };
 
+function requireEnv(name: 'JWT_SECRET' | 'ADMIN_EMAIL' | 'ADMIN_PASSWORD') {
+  const value = process.env[name]?.trim();
+
+  if (!value) {
+    throw new Error(`[config] Missing required environment variable: ${name}`);
+  }
+
+  return value;
+}
+
 export const authConfig = {
-  jwtSecret: process.env.JWT_SECRET ?? 'dev-only-secret-change-me',
-  adminEmail: process.env.ADMIN_EMAIL ?? 'solventatrade@gmail.com',
-  adminPassword: process.env.ADMIN_PASSWORD ?? 'Solventa2026',
+  jwtSecret: requireEnv('JWT_SECRET'),
+  adminEmail: requireEnv('ADMIN_EMAIL'),
+  adminPassword: requireEnv('ADMIN_PASSWORD'),
   tokenExpiresIn: '8h' as const,
   issuer: 'solventa-backend',
   audience: 'solventa-admin'
