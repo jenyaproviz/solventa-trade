@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createContactMessage, listContactMessages } from '../data/contactStore.js';
+import { createContactMessage, deleteContactMessage, listContactMessages } from '../data/contactStore.js';
 import { requireAdmin } from '../middleware/requireAuth.js';
 import { sendContactEmail } from '../services/mailer.js';
 
@@ -23,6 +23,16 @@ contactRouter.get('/', requireAdmin, async (_req, res) => {
   } catch (error) {
     console.error('[contact] Failed to load saved contact messages:', error);
     return res.status(500).json({ message: 'Failed to load contact messages.' });
+  }
+});
+
+contactRouter.delete('/:id', requireAdmin, async (req, res) => {
+  try {
+    await deleteContactMessage(req.params.id);
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error('[contact] Failed to delete contact message:', error);
+    return res.status(500).json({ message: 'Failed to delete contact message.' });
   }
 });
 

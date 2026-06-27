@@ -28,6 +28,11 @@ export async function listContactMessages() {
   return items.map(stripMongoMeta);
 }
 
+export async function deleteContactMessage(id: string) {
+  const contacts = await getContactMessagesCollection();
+  await contacts.deleteOne({ id });
+}
+
 export function createContactMessage(input: Omit<ContactMessageRecord, 'id' | 'createdAt'>) {
   const record: ContactMessageRecord = {
     ...input,

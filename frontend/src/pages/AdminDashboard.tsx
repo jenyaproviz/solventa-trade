@@ -48,7 +48,7 @@ import {
 	type AdminContentInput,
 	type AdminContentItem,
 } from "../services/adminContentService"
-import { listContactMessages, type ContactMessageRecord } from "../services/contactAdminService"
+import { deleteContactMessage, listContactMessages, type ContactMessageRecord } from "../services/contactAdminService"
 
 type StatusState = {
 	loading: boolean
@@ -311,6 +311,11 @@ export default function AdminDashboard() {
 		if (editingReviewId === review.id) {
 			resetReviewForm()
 		}
+	}
+
+	async function handleDeleteContact(message: ContactMessageRecord) {
+		await deleteContactMessage(message.id)
+		setContactMessages((current) => current.filter((item) => item.id !== message.id))
 	}
 
 	async function handleDeleteContent(item: AdminContentItem) {
@@ -625,6 +630,14 @@ export default function AdminDashboard() {
 												Download attachment
 											</a>
 										) : null}
+										<Button
+											type="button"
+											variant="ghost"
+											onClick={() => void handleDeleteContact(selectedContactMessage)}
+											className="ml-auto border border-red-200 !px-3 !py-2 text-red-600 hover:border-red-300 hover:bg-red-50 hover:text-red-700"
+										>
+											<Trash2 className="h-4 w-4" />
+										</Button>
 									</div>
 								</div>
 							) : null}

@@ -21,3 +21,7 @@ export async function listContactMessages(): Promise<ContactMessageRecord[]> {
 
 	return response.items
 }
+
+export async function deleteContactMessage(id: string): Promise<void> {
+	await apiRequest(`/api/contact/${id}`, { method: 'DELETE' })
+}
