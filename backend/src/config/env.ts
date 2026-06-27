@@ -16,6 +16,7 @@ export const env = {
   smtpUser: process.env.SMTP_USER ?? '',
   smtpPass: process.env.SMTP_PASS ?? '',
   contactRecipient: process.env.CONTACT_RECIPIENT ?? 'solventatrade@gmail.com',
+  resendApiKey: process.env.RESEND_API_KEY ?? '',
   mongoUri: process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017',
   mongoDbName: process.env.MONGODB_DB_NAME ?? 'solventa',
 };
