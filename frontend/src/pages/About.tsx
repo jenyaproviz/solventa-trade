@@ -16,51 +16,60 @@ export default function About() {
 
           <div className="mt-10 grid gap-10 md:mt-14 md:grid-cols-[1.05fr_1fr] md:gap-12">
             <TextCard className="h-full">
-              <p className="text-base leading-relaxed text-slate-800 md:text-lg">
-                <span className="font-bold">SOLVENTA</span> is a premier
-                international consulting and trade partner dedicated to fostering seamless
-                commercial operations between Europe, the Middle East, and the Far East. We
-                specialize in providing strategic business development, comprehensive sourcing
-                solutions, and expert navigation of complex global supply chains.
-                <br /><br />
-                Two Decades of Multi-Industry Expertise
-                <br />
-                What sets SOLVENTA apart is our deep-rooted heritage of excellence. Our
-                foundation is built upon 20 years of hands-on experience across a diverse
-                spectrum of industrial sectors. This extensive history allows us to understand
-                the unique nuances, regulatory landscapes, and operational challenges of various
-                markets.
-                <br /><br />
-                Our core expertise spans several key industries, including:
-                <br />
-                Telecommunications: Navigating high-tech procurement and infrastructure development.
-                <br />
-                Building Materials: Sourcing and supplying essential components for large-scale construction projects.
-                <br />
-                Wood & Timber: Managing sustainable supply chains and quality control in the forestry sector.
-                <br />
-                Food Industry: Facilitating the trade of commodities and processed goods while ensuring strict adherence to international safety standards.
-                <br />
-                And Beyond: Our versatile methodology allows us to apply our consulting and trade principles to virtually any industrial field.
-                <br /><br />
-                Our Mission & Approach
-                <br />
-                At SOLVENTA, we believe that successful trade is built on transparency, reliability, and mutual growth. Our mission is to empower our clients by identifying lucrative market opportunities and establishing stable, long-term partnerships.
-                <br />
-                We do not just offer advice; we provide results-oriented solutions. Whether you are an EU manufacturer looking to expand into Asian markets or a business seeking a reliable sourcing partner in the East, SOLVENTA provides the strategic bridge necessary to achieve your goals.
-                <br /><br />
-                Why Partner With Us?
-                <br />
-                20 Years of Experience: A proven track record in diverse industrial fields.
-                <br />
-                Global Network: Strong, established connections across Europe and Asia.
-                <br />
-                Tailored Strategies: Custom-fit consulting designed for your specific business objectives.
-                <br />
-                Integrity: A commitment to ethical trade practices and transparent communication.
-                <br />
-                SOLVENTA: Your strategic partner for the next generation of global commerce.
-              </p>
+              <div className="space-y-6 text-base leading-relaxed text-slate-800 md:text-lg">
+                <p>
+                  At <span className="font-bold">SOLVENTA</span>, we help businesses expand globally by connecting them with reliable manufacturers, suppliers, and strategic business opportunities.
+                </p>
+                <p>
+                  We specialize in international trade, supplier sourcing, procurement support, and business consulting, providing practical solutions that simplify cross-border operations and reduce commercial risks.
+                </p>
+                <p>
+                  Our mission is to build long-term partnerships based on trust, transparency, and measurable results. Whether you are looking to source products, enter new markets, optimize your supply chain, or establish international business relationships, SOLVENTA delivers professional support at every stage of the process.
+                </p>
+
+                <div>
+                  <h3 className="mb-3 text-xl font-bold text-[#0c3b67]">Our Services</h3>
+                  <ul className="space-y-1.5">
+                    {[
+                      "International Trade",
+                      "Supplier & Manufacturer Sourcing",
+                      "Procurement Support",
+                      "Business Consulting",
+                      "Market Research",
+                      "Import & Export Assistance",
+                      "Commercial Representation",
+                      "Business Matchmaking",
+                    ].map((s) => (
+                      <li key={s} className="flex items-start gap-2">
+                        <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-orange-400" />
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="mb-3 text-xl font-bold text-[#0c3b67]">Why Choose SOLVENTA</h3>
+                  <ul className="space-y-1.5">
+                    {[
+                      "Reliable international network",
+                      "Personalized business solutions",
+                      "Professional communication",
+                      "Transparent and efficient processes",
+                      "Commitment to long-term partnerships",
+                    ].map((s) => (
+                      <li key={s} className="flex items-start gap-2">
+                        <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-orange-400" />
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <p className="font-semibold text-[#0c3b67]">
+                  SOLVENTA – Connecting Business Beyond Borders.
+                </p>
+              </div>
             </TextCard>
 
             <div className="flex h-full flex-col justify-between">
