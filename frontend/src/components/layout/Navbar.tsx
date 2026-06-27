@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
 import { Menu, MoonStar, SunMedium, X } from "lucide-react"
 import { NavLink, useNavigate } from "react-router-dom"
 import Button from "../ui/Button"
@@ -166,9 +167,9 @@ export default function Navbar() {
 
     </header>
 
-    {/* ── Mobile full-screen overlay menu — rendered OUTSIDE <header> to escape its stacking context ── */}
-    {menuOpen && (
-      <div className="fixed inset-0 z-[100] flex flex-col overflow-y-auto bg-white px-6 pb-10 pt-5 md:hidden">
+    {/* ── Mobile full-screen overlay menu — portal to document.body to escape ALL stacking contexts ── */}
+    {menuOpen && createPortal(
+      <div className="fixed inset-0 z-[9999] flex flex-col overflow-y-auto bg-white px-6 pb-10 pt-5 md:hidden">
           {/* Header row inside overlay */}
           <div className="flex items-center justify-between mb-8">
             <NavLink to="/" className="inline-flex items-center" end onClick={closeMenu}>
@@ -239,7 +240,7 @@ export default function Navbar() {
             <span className="text-sm text-slate-500">{theme === "dark" ? "Light mode" : "Dark mode"}</span>
           </div>
         </div>
-    )}
+    , document.body)}
     </>
   )
 }
