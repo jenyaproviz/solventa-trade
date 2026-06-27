@@ -28,7 +28,7 @@ contactRouter.get('/', requireAdmin, async (_req, res) => {
 
 contactRouter.delete('/:id', requireAdmin, async (req, res) => {
   try {
-    await deleteContactMessage(req.params.id);
+    await deleteContactMessage(req.params['id'] as string);
     return res.json({ ok: true });
   } catch (error) {
     console.error('[contact] Failed to delete contact message:', error);
