@@ -88,8 +88,9 @@ export default function Navbar() {
         {/* ── Mobile top bar ── */}
         <div className="flex items-center justify-between md:hidden">
           <NavLink to="/" className="inline-flex items-center" end onClick={closeMenu}>
-            <span className="relative inline-block h-14 w-[200px]">
-              <img src="/logo.jpg" alt="Solventa logo" className="absolute inset-0 h-full w-full object-contain" />
+            <span className="sv-brand-logo-wrap relative inline-block h-14 w-[200px]">
+              <img src="/logo.jpg" alt="Solventa logo" className="sv-brand-logo-base absolute inset-0 h-full w-full object-contain" />
+              <img src="/logo.jpg" alt="" aria-hidden="true" className="sv-brand-logo-text absolute inset-0 h-full w-full object-contain" />
             </span>
           </NavLink>
           <div className="flex items-center gap-1">
