@@ -149,7 +149,7 @@ export default function Contact() {
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
                   <Phone className="h-5 w-5 text-orange-500" strokeWidth={1.8} />
                 </div>
-                <span className="text-base text-slate-700">+359 000 000 000</span>
+                <span className="text-base text-slate-700">+49 151 565 10 936</span>
               </li>
               <li className="flex items-center gap-4">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
