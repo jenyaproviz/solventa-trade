@@ -70,7 +70,9 @@ export default function Navbar() {
       "rounded-md px-4 py-3 text-xl font-semibold transition-all duration-300",
       isActive
         ? "bg-gradient-to-r from-orange-500 to-orange-400 text-white shadow-[0_6px_16px_rgba(249,115,22,0.32)]"
-        : "text-[#27415f] hover:bg-[#edf4ff] hover:text-[#0c3b67]",
+        : theme === "dark"
+          ? "text-[#cfdef0] hover:bg-[#0d2a45] hover:text-white"
+          : "text-[#27415f] hover:bg-[#edf4ff] hover:text-[#0c3b67]",
     ].join(" ")
 
   const desktopLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -169,7 +171,10 @@ export default function Navbar() {
 
     {/* ── Mobile full-screen overlay menu — portal to document.body to escape ALL stacking contexts ── */}
     {menuOpen && createPortal(
-      <div className="fixed inset-0 z-[9999] flex flex-col overflow-y-auto bg-white px-6 pb-10 pt-5 md:hidden">
+      <div
+        className="fixed inset-0 z-[9999] flex flex-col overflow-y-auto px-6 pb-10 pt-5"
+        style={{ backgroundColor: theme === "dark" ? "#041528" : "#ffffff", color: theme === "dark" ? "#e5edf9" : "#344150" }}
+      >
           {/* Header row inside overlay */}
           <div className="flex items-center justify-between mb-8">
             <NavLink to="/" className="inline-flex items-center" end onClick={closeMenu}>
