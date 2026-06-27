@@ -81,7 +81,7 @@ export default function Navbar() {
     ].join(" ")
 
   return (
-    <header className="sv-navbar sticky top-0 z-50 border-b border-[#d8e5f4] bg-white/80 shadow-[0_2px_14px_rgba(12,59,103,0.06)] backdrop-blur-md">
+    <header className="sv-navbar sticky top-0 z-50 border-b border-[#d8e5f4] bg-white shadow-[0_2px_14px_rgba(12,59,103,0.06)] md:bg-white/80 md:backdrop-blur-md">
       <div className="mx-auto w-full max-w-[100rem] px-4 py-4 md:px-2 lg:px-3">
 
         {/* ── Mobile top bar ── */}
