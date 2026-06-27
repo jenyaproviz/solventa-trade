@@ -81,6 +81,7 @@ export default function Navbar() {
     ].join(" ")
 
   return (
+    <>
     <header className="sv-navbar sticky top-0 z-50 border-b border-[#d8e5f4] bg-white shadow-[0_2px_14px_rgba(12,59,103,0.06)] md:bg-white/80 md:backdrop-blur-md">
       <div className="mx-auto w-full max-w-[100rem] px-4 py-4 md:px-2 lg:px-3">
 
@@ -162,9 +163,11 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ── Mobile full-screen overlay menu ── */}
-      {menuOpen && (
-        <div className="fixed inset-0 z-[100] flex flex-col overflow-y-auto bg-white px-6 pb-10 pt-5 md:hidden">
+    </header>
+
+    {/* ── Mobile full-screen overlay menu — rendered OUTSIDE <header> to escape its stacking context ── */}
+    {menuOpen && (
+      <div className="fixed inset-0 z-[100] flex flex-col overflow-y-auto bg-white px-6 pb-10 pt-5 md:hidden">
           {/* Header row inside overlay */}
           <div className="flex items-center justify-between mb-8">
             <NavLink to="/" className="inline-flex items-center" end onClick={closeMenu}>
@@ -235,7 +238,7 @@ export default function Navbar() {
             <span className="text-sm text-slate-500">{theme === "dark" ? "Light mode" : "Dark mode"}</span>
           </div>
         </div>
-      )}
-    </header>
+    )}
+    </>
   )
 }
